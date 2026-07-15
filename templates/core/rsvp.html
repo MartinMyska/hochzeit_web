@@ -1,0 +1,630 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Přijdeme! — Viola &amp; Martin</title>
+    <link rel="icon" type="image/png" href="{% static 'core/wax_seal_lilly_2.png' %}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: Georgia, serif;
+            background: #e1eefc;
+            color: #1a2e4f;
+            min-height: 100vh;
+        }
+
+        /* ── Header ── */
+        .page-header {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+        }
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: normal;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.4rem;
+        }
+        .page-header p {
+            font-size: 1rem;
+            color: #3d5a80;
+            letter-spacing: 0.05em;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            font-size: 0.82rem;
+            letter-spacing: 0.1em;
+            color: #3d5a80;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: #1a2e4f; }
+
+        /* ── Form ── */
+        form {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0 2rem 5rem;
+        }
+
+        .form-section {
+            margin-bottom: 3rem;
+            padding-top: 0.8rem;
+        }
+
+        .section-title {
+            font-size: 0.82rem;
+            font-weight: normal;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #1a2e4f;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid rgba(26, 46, 79, 0.18);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-note {
+            font-size: 0.9rem;
+            color: #3d5a80;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ── Text inputs ── */
+        .field {
+            margin-bottom: 1.2rem;
+        }
+        .field > label {
+            display: block;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #3d5a80;
+            margin-bottom: 0.35rem;
+        }
+        .field input[type="text"],
+        .field input[type="number"],
+        .field input[type="date"],
+        .field textarea {
+            width: 100%;
+            padding: 0.55rem 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(26, 46, 79, 0.25);
+            font-family: Georgia, serif;
+            font-size: 1rem;
+            color: #1a2e4f;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .field input:focus,
+        .field textarea:focus {
+            border-bottom-color: #1a2e4f;
+        }
+        .field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* ── Pill checkboxes ── */
+        .pill-field {
+            margin-bottom: 1.2rem;
+        }
+        .pill-field > label {
+            display: block;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #3d5a80;
+            margin-bottom: 0.55rem;
+        }
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+        .pill-group input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .pill {
+            display: inline-block;
+            padding: 0.28rem 0.85rem;
+            border: 1px solid rgba(26, 46, 79, 0.28);
+            border-radius: 2rem;
+            font-family: Georgia, serif;
+            font-size: 0.88rem;
+            color: #3d5a80;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            user-select: none;
+        }
+        .pill-group input[type="checkbox"]:checked + .pill {
+            background: #1a2e4f;
+            color: #e1eefc;
+            border-color: #1a2e4f;
+        }
+
+        /* ── Person cards ── */
+        .person-card {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(26, 46, 79, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .person-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+        .person-label {
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #577C97;
+        }
+        .person-card-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .child-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.82rem;
+            color: #3d5a80;
+            cursor: pointer;
+        }
+        .child-toggle input[type="checkbox"],
+        .accom-want-label input[type="checkbox"],
+        .accom-want-label input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .child-toggle input:checked + .check-indicator,
+        .accom-want-label input:checked + .check-indicator {
+            background: #1a2e4f;
+            border-color: #1a2e4f;
+        }
+        .child-toggle input:checked + .check-indicator::after,
+        .accom-want-label input:checked + .check-indicator::after {
+            display: block;
+        }
+        .remove-person {
+            background: none;
+            border: none;
+            color: rgba(26, 46, 79, 0.25);
+            font-size: 1.4rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.15s;
+        }
+        .remove-person:hover { color: #1a2e4f; }
+
+        /* ── Add person buttons ── */
+        .add-person-btns {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .btn-add {
+            background: none;
+            border: 1px solid rgba(26, 46, 79, 0.28);
+            border-radius: 10px;
+            color: #3d5a80;
+            font-family: Georgia, serif;
+            font-size: 0.88rem;
+            padding: 0.45rem 1.1rem;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-add:hover { border-color: #1a2e4f; color: #1a2e4f; }
+
+        /* ── Accommodation ── */
+        .accom-want-label {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #1a2e4f;
+            margin-bottom: 1.2rem;
+        }
+
+
+        .accom-options-wrap { display: flex; flex-direction: column; gap: 0.6rem; }
+        .accom-options-wrap.hidden { display: none; }
+
+        .accom-option {
+            display: block;
+            cursor: pointer;
+        }
+        .accom-option input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .accom-option-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid rgba(26, 46, 79, 0.18);
+            padding: 1rem 1.2rem;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .accom-option input:checked + .accom-option-card {
+            border-color: rgba(26, 46, 79, 0.35);
+            background: rgba(26, 46, 79, 0.04);
+        }
+        .accom-option-content { flex: 1; }
+        .accom-option-header {
+            display: flex;
+            align-items: baseline;
+            gap: 0.55rem;
+            margin-bottom: 0.35rem;
+        }
+        .accom-option-name { font-size: 0.95rem; color: #1a2e4f; }
+        .accom-option-tag  { font-size: 0.75rem; letter-spacing: 0.06em; color: #577C97; }
+        .accom-option-desc {
+            font-size: 0.85rem;
+            color: #3d5a80;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        /* Tick box */
+        .check-indicator {
+            width: 22px;
+            min-width: 22px;
+            height: 22px;
+            border: 1.5px solid rgba(26, 46, 79, 0.28);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .check-indicator::after {
+            content: '';
+            display: none;
+            width: 5px;
+            height: 10px;
+            border: 2px solid #e1eefc;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg) translate(-1px, -1px);
+        }
+        .accom-option input:checked + .accom-option-card .check-indicator {
+            background: #1a2e4f;
+            border-color: #1a2e4f;
+        }
+        .accom-option input:checked + .accom-option-card .check-indicator::after {
+            display: block;
+        }
+
+        /* ── Submit ── */
+        .submit-wrap {
+            text-align: center;
+            padding-top: 1rem;
+        }
+        .btn-submit {
+            padding: 0.9rem 3rem;
+            font-family: Georgia, serif;
+            font-size: 1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #e1eefc;
+            background: #1a2e4f;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background: #577C97; }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <h1>Přijdeme!</h1>
+    <p>Viola &amp; Martin · 31. října 2026</p>
+    <a href="{% url 'index' %}" class="back-link">← zpět</a>
+</div>
+
+{% if already_submitted %}
+<div style="text-align:center; padding: 5rem 2rem;">
+    <h2 style="font-size:2rem; font-weight:normal; letter-spacing:0.08em; color:#1a2e4f; margin-bottom:1rem;">Přihláška odeslána</h2>
+    <p style="font-size:1.1rem; color:#3d5a80;">Vaši přihlášku jsme již přijali. Pokud potřebujete něco změnit, napište nám na <a href="mailto:martin.mysska@gmail.com" style="color:#1a2e4f;">martin.mysska@gmail.com</a>.</p>
+    <a href="{% url 'index' %}" class="back-link" style="display:inline-block; margin-top:2rem;">← zpět na hlavní stránku</a>
+</div>
+{% else %}
+<form id="rsvp-form" method="post">
+    {% csrf_token %}
+    <input type="text" name="hp_name" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;pointer-events:none;">
+
+    <!-- ── People ── -->
+    <div class="form-section">
+        <h2 class="section-title">Kdo přijde?</h2>
+        <p class="section-note">Vyplňte za celou rodinu</p>
+
+        <div id="people-list"></div>
+
+        <div class="add-person-btns">
+            <button type="button" class="btn-add" onclick="addPerson(false)">+ Přidat dospělého</button>
+            <button type="button" class="btn-add" onclick="addPerson(true)">+ Přidat dítě</button>
+        </div>
+    </div>
+
+    <!-- ── Accommodation ── -->
+    <div class="form-section">
+        <h2 class="section-title">Kde po party složíte hlavu? (Ubytování)</h2>
+        <p class="section-note">Abychom vám ušetřili starosti s hledáním, s noclehem vám rádi poradíme nebo ho rovnou zařídíme. Kapacity přímo v areálu jsou omezené a náklady na ubytování si hradí každý sám.</p>
+
+        <label class="accom-want-label">
+            <input type="radio" name="accom_want" value="sleep" id="accom-sleep" onchange="toggleAccom(false)">
+            <div class="check-indicator"></div>
+            Spím ve vlastní posteli
+        </label>
+
+        <label class="accom-want-label">
+            <input type="radio" name="accom_want" value="help" id="accom-help" onchange="toggleAccom(true)">
+            <div class="check-indicator"></div>
+            Uvítal/a bych pomoc s ubytováním
+        </label>
+
+        <div id="accom-options-wrap" class="accom-options-wrap hidden">
+            <p class="section-note" style="margin-bottom:1rem">Dejte nám prosím vědět, co by vám nejvíce vyhovovalo</p>
+
+            <label class="accom-option">
+                <input type="checkbox" name="accom_pref" value="chaticky">
+                <div class="accom-option-card">
+                    <div class="accom-option-content">
+                        <div class="accom-option-header">
+                            <span class="accom-option-name">Chatičky v areálu</span>
+                            <span class="accom-option-tag">Pro dobrodruhy</span>
+                        </div>
+                        <p class="accom-option-desc">Sedm dřevěných chatek pro dva. Sdílená koupelna v hlavní budově. Koncem října v nich sice už může být chladněji, ale malý přímotop to jistí! Rezervaci těchto chatiček vyřídíme hromadně.</p>
+                    </div>
+                    <div class="check-indicator"></div>
+                </div>
+            </label>
+
+            <label class="accom-option">
+                <input type="checkbox" name="accom_pref" value="penzion">
+                <div class="accom-option-card">
+                    <div class="accom-option-content">
+                        <div class="accom-option-header">
+                            <span class="accom-option-name">Penzion / Apartmán v okolí</span>
+                            <span class="accom-option-tag">Mám raději svůj klid</span>
+                        </div>
+                        <p class="accom-option-desc">Ubytování cca 10 minut autem od mlýna. Předáme kontakt pro ty z vás, kteří preferují vlastní sociální zařízení a stoprocentní klid.</p>
+                    </div>
+                    <div class="check-indicator"></div>
+                </div>
+            </label>
+
+        </div>
+    </div>
+
+    <!-- ── Song request ── -->
+    <div class="form-section">
+        <h2 class="section-title">Hudební přání</h2>
+        <p class="section-note">Je nějaká skladba, bez které se neobejdete?</p>
+        <div class="field">
+            <input type="text" name="song_request" placeholder="Např. ABBA – Dancing Queen">
+        </div>
+    </div>
+
+    <!-- ── Message ── -->
+    <div class="form-section">
+        <h2 class="section-title">Vzkaz novomanželům</h2>
+        <div class="field">
+            <textarea name="message" placeholder="Chcete nám něco dalšího vzkázat?"></textarea>
+        </div>
+    </div>
+
+    <!-- ── Submit ── -->
+    <div class="submit-wrap">
+        <button type="submit" class="btn-submit" id="btn-submit">Odeslat přihlášku</button>
+    </div>
+</form>
+
+<div id="rsvp-success" style="display:none; text-align:center; padding: 5rem 2rem;">
+    <h2 style="font-size:2rem; font-weight:normal; letter-spacing:0.08em; color:#1a2e4f; margin-bottom:1rem;">Děkujeme!</h2>
+    <p style="font-size:1.1rem; color:#3d5a80;">Vaše přihláška byla úspěšně odeslána. Těšíme se na vás!</p>
+    <a href="{% url 'index' %}" class="back-link" style="display:inline-block; margin-top:2rem;">← zpět na hlavní stránku</a>
+</div>
+{% endif %}
+
+<!-- Person card template -->
+<template id="person-tpl">
+    <div class="person-card">
+        <div class="person-card-header">
+            <span class="person-label">Osoba <span class="person-index"></span></span>
+            <div class="person-card-actions">
+                <label class="child-toggle">
+                    <input type="checkbox" class="is-child-check">
+                    <div class="check-indicator"></div>
+                    Dítě
+                </label>
+                <button type="button" class="remove-person" title="Odebrat">×</button>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Jméno a příjmení</label>
+            <input type="text" class="person-name" placeholder="Jana Nováková">
+        </div>
+
+        <div class="field child-age-field" style="display:none">
+            <label>Věk dítěte <span style="font-size:.75em;text-transform:none;letter-spacing:0">(nepovinné)</span></label>
+            <input type="number" class="person-age" min="0" max="17" placeholder="5">
+        </div>
+
+        <div class="pill-field">
+            <label>Stravování</label>
+            <div class="pill-group">
+                <label><input type="checkbox"><span class="pill">Bez omezení</span></label>
+                <label><input type="checkbox"><span class="pill">Vegetarián/ka</span></label>
+                <label><input type="checkbox"><span class="pill">Vegan/ka</span></label>
+                <label><input type="checkbox"><span class="pill">Bezlepkové</span></label>
+                <label><input type="checkbox"><span class="pill">Bez laktózy</span></label>
+                <label><input type="checkbox"><span class="pill">Alergie na ořechy</span></label>
+                <label><input type="checkbox" class="other-diet-check"><span class="pill">Jiné</span></label>
+            </div>
+            <div class="field other-diet-field" style="display:none;margin-top:.7rem">
+                <input type="text" placeholder="Upřesněte prosím…">
+            </div>
+        </div>
+
+        <div class="pill-field alcohol-section">
+            <label>Oblíbený alkohol</label>
+            <div class="pill-group">
+                <label><input type="checkbox"><span class="pill">Pivo</span></label>
+                <label><input type="checkbox"><span class="pill">Červené víno</span></label>
+                <label><input type="checkbox"><span class="pill">Bílé víno</span></label>
+                <label><input type="checkbox"><span class="pill">Prosecco</span></label>
+                <label><input type="checkbox"><span class="pill">Drinky</span></label>
+                <label><input type="checkbox"><span class="pill">Myškovic sklep</span></label>
+                <label><input type="checkbox"><span class="pill">Jiné tvrdé</span></label>
+                <label><input type="checkbox"><span class="pill">Pouze nealko</span></label>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    let personCount = 0;
+
+    function collectData() {
+        const persons = [];
+        document.querySelectorAll('#people-list .person-card').forEach(card => {
+            const isChild = card.querySelector('.is-child-check').checked;
+            const dietField = card.querySelector('.pill-field:not(.alcohol-section)');
+            const otherDietCheck = card.querySelector('.other-diet-check');
+            const diet = [...dietField.querySelectorAll('.pill-group input:checked')]
+                .map(cb => cb.nextElementSibling.textContent.trim())
+                .filter(t => t !== 'Jiné');
+            const otherDiet = otherDietCheck.checked
+                ? card.querySelector('.other-diet-field input').value.trim() : '';
+            const alcohol = isChild ? [] :
+                [...card.querySelectorAll('.alcohol-section .pill-group input:checked')]
+                    .map(cb => cb.nextElementSibling.textContent.trim());
+            persons.push({
+                name: card.querySelector('.person-name').value.trim(),
+                is_child: isChild,
+                age: isChild ? (parseInt(card.querySelector('.person-age').value) || null) : null,
+                diet,
+                other_diet: otherDiet,
+                alcohol,
+            });
+        });
+        return {
+            persons,
+            accom_want: document.querySelector('input[name="accom_want"]:checked')?.value || '',
+            accom_pref: [...document.querySelectorAll('input[name="accom_pref"]:checked')].map(cb => cb.value),
+            song_request: document.querySelector('input[name="song_request"]').value.trim(),
+            message: document.querySelector('textarea[name="message"]').value.trim(),
+            hp_name: document.querySelector('input[name="hp_name"]').value,
+        };
+    }
+
+    document.getElementById('rsvp-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-submit');
+        btn.disabled = true;
+        btn.textContent = 'Odesílám…';
+        const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        try {
+            const res = await fetch('', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf },
+                body: JSON.stringify(collectData()),
+            });
+            const result = await res.json();
+            if (result.ok) {
+                document.getElementById('rsvp-form').style.display = 'none';
+                document.getElementById('rsvp-success').style.display = 'block';
+            } else {
+                btn.disabled = false;
+                btn.textContent = 'Odeslat přihlášku';
+                alert('Něco se pokazilo. Zkuste to prosím znovu.');
+            }
+        } catch {
+            btn.disabled = false;
+            btn.textContent = 'Odeslat přihlášku';
+            alert('Chyba připojení. Zkuste to prosím znovu.');
+        }
+    });
+
+    function addPerson(isChild) {
+        const tpl   = document.getElementById('person-tpl');
+        const clone = tpl.content.cloneNode(true);
+        const card  = clone.querySelector('.person-card');
+
+        personCount++;
+        card.querySelector('.person-index').textContent = personCount;
+
+        // First person cannot be removed
+        if (personCount === 1) {
+            card.querySelector('.remove-person').style.visibility = 'hidden';
+        }
+
+        // Wire remove button
+        card.querySelector('.remove-person').addEventListener('click', function () {
+            card.remove();
+            renumber();
+        });
+
+        // Wire child toggle
+        const childCheck = card.querySelector('.is-child-check');
+        if (isChild) {
+            childCheck.checked = true;
+            applyChildToggle(card, true);
+        }
+        childCheck.addEventListener('change', function () {
+            applyChildToggle(card, this.checked);
+        });
+
+        // Wire "Jiné" diet toggle
+        card.querySelector('.other-diet-check').addEventListener('change', function () {
+            card.querySelector('.other-diet-field').style.display = this.checked ? 'block' : 'none';
+        });
+
+        document.getElementById('people-list').appendChild(card);
+    }
+
+    function applyChildToggle(card, isChild) {
+        card.querySelector('.alcohol-section').style.display  = isChild ? 'none'  : '';
+        card.querySelector('.child-age-field').style.display  = isChild ? 'block' : 'none';
+    }
+
+    function renumber() {
+        document.querySelectorAll('#people-list .person-card').forEach((card, i) => {
+            card.querySelector('.person-index').textContent = i + 1;
+            card.querySelector('.remove-person').style.visibility = i === 0 ? 'hidden' : '';
+        });
+        personCount = document.querySelectorAll('#people-list .person-card').length;
+    }
+
+    function toggleAccom(checked) {
+        document.getElementById('accom-options-wrap').classList.toggle('hidden', !checked);
+    }
+
+    // Start with one person
+    addPerson(false);
+</script>
+</body>
+</html>

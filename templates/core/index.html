@@ -1,46 +1,870 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="de">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coming Soon</title>
+    <title>Viola &amp; Martin</title>
+    <link rel="icon" type="image/png" href="{% static 'core/wax_seal_lilly_2.png' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
         body {
+            font-family: Georgia, serif;
+            background: #e1eefc;
+            color: #1a2e4f;
+        }
+
+        /* ══════════════════════════════
+           GATE
+        ══════════════════════════════ */
+        #gate {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            perspective: 1400px;
+            cursor: pointer;
+        }
+        #gate.gone { display: none; }
+
+        .gate-panel {
+            width: 50%;
+            height: 100%;
+            background: #1a2e4f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 2.3s cubic-bezier(0.7, 0, 0.3, 1),
+                        opacity 2.1s ease;
+        }
+        .gate-left {
+            position: relative;
+            z-index: 2;
+            transform-origin: left center;
+            box-shadow: inset -1px 0 0 rgba(255,255,255,0.06),
+                        inset -12px 0 28px rgba(0,0,0,0.3);
+        }
+        .gate-right {
+            position: relative;
+            z-index: 1;
+            transform-origin: right center;
+            box-shadow: inset 1px 0 0 rgba(255,255,255,0.06),
+                        inset 12px 0 28px rgba(0,0,0,0.3);
+        }
+
+        .wax-seal {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translate(50%, -50%);
+            width: 160px;
+            pointer-events: none;
+            isolation: isolate;
+        }
+        .wax-seal::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 75%;
+            height: 75%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            box-shadow: 0 0 28px 14px rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+        .wax-seal img { width: 100%; display: block; }
+
+        #gate.opening .gate-left  { transform: rotateY(-90deg); opacity: 0; }
+        #gate.opening .gate-right { transform: rotateY(90deg);  opacity: 0; }
+
+        .gate-initial {
+            font-size: 9rem;
+            font-weight: normal;
+            letter-spacing: 0.05em;
+            color: rgba(225, 238, 252, 0.55);
+            user-select: none;
+        }
+
+        .gate-hint {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(200, 222, 245, 0.45);
+            white-space: nowrap;
+            user-select: none;
+            transition: opacity 0.3s;
+        }
+        .gate-hint.hidden { opacity: 0; }
+
+        /* ══════════════════════════════
+           TOP NAV
+        ══════════════════════════════ */
+        #top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(225, 238, 252, 0.93);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(61, 90, 128, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            padding: 0.85rem 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+        #top-nav.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .nav-link {
+            font-size: 0.91rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #3d5a80;
+            text-decoration: none;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+        .nav-link:hover { color: #1a2e4f; }
+        .nav-rsvp {
+            border: 1px solid #3d5a80;
+            padding: 0.35rem 1.1rem;
+            color: #1a2e4f;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .nav-rsvp:hover {
+            background: #1a2e4f;
+            color: #dce8f2;
+            border-color: #1a2e4f;
+        }
+
+        /* ══════════════════════════════
+           HERO
+        ══════════════════════════════ */
+        #main-page { display: block; }
+
+        .hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: Georgia, serif;
-            background: #fdf8f0;
-            color: #4a3728;
+            position: relative;
+            background-size: cover;
+            background-position: center top;
         }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(225, 238, 252, 0.55);
+        }
+        .hero .container {
+            position: relative;
+            z-index: 1;
+        }
+
         .container { text-align: center; padding: 2rem; }
-        h1 { font-size: 3rem; font-weight: normal; letter-spacing: 0.1em; margin-bottom: 1rem; }
-        p { font-size: 1.2rem; color: #8a6d5e; }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: normal;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .container p { font-size: 1.2rem; color: #3d5a80; }
+
+        .countdown {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        .countdown-unit { text-align: center; }
+        .countdown-number {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: normal;
+            color: #1a2e4f;
+            line-height: 1;
+        }
+        .countdown-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #3d5a80;
+        }
+
+        /* ══════════════════════════════
+           SECTIONS — BASE
+        ══════════════════════════════ */
+        .page-section {
+            padding: 5rem 0;
+            scroll-margin-top: 52px;
+        }
+        .page-section.section-alt {
+            background: rgba(193, 215, 238, 0.25);
+        }
+
+        .section-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: normal;
+            letter-spacing: 0.08em;
+            color: #1a2e4f;
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        .section-text {
+            font-size: 1.05rem;
+            line-height: 1.85;
+            color: #3d5a80;
+        }
+        .section-text + .section-text { margin-top: 1.2rem; }
+
+        /* Split layout */
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .split-grid.reverse .split-img { order: 2; }
+
+        /* Image placeholder */
+        .img-placeholder {
+            background: #bdd0e4;
+            aspect-ratio: 4 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7a9dbf;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* ── Carousel ── */
+        .carousel {
+            position: relative;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .carousel-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        .carousel-slide.active { opacity: 1; }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .carousel-counter {
+            position: absolute;
+            bottom: 0.6rem;
+            right: 0.75rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.85);
+            z-index: 2;
+            pointer-events: none;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ══════════════════════════════
+           MAP
+        ══════════════════════════════ */
+        .map-wrap {
+            scroll-margin-top: 52px;
+            background: rgba(193, 215, 238, 0.25);
+            padding-bottom: 3rem;
+        }
+        #map { width: 100%; height: 450px; }
+
+        /* ══════════════════════════════
+           HARMONOGRAM
+        ══════════════════════════════ */
+        .timeline {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 70px 24px 1fr;
+            column-gap: 0.75rem;
+        }
+        .tl-time {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #577C97;
+            padding-top: 0.2rem;
+        }
+        .tl-spine {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .tl-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #1a2e4f;
+            flex-shrink: 0;
+            margin-top: 0.3rem;
+        }
+        .tl-line {
+            width: 2px;
+            flex: 1;
+            background: #a8c0d8;
+            min-height: 1.6rem;
+        }
+        .timeline-item:last-child .tl-line { display: none; }
+        .tl-label {
+            font-size: 1rem;
+            color: #1a2e4f;
+            padding-bottom: 1.6rem;
+        }
+
+        /* ══════════════════════════════
+           DRESS CODE
+        ══════════════════════════════ */
+        .dress-note {
+            font-size: 0.9rem;
+            color: #577C97;
+            letter-spacing: 0.04em;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .color-palette {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .swatch-wrap { text-align: center; }
+        .swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto 0.5rem;
+        }
+        .swatch-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #577C97;
+        }
+
+        /* ══════════════════════════════
+           UBYTOVÁNÍ
+        ══════════════════════════════ */
+        .hotel-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .hotel-card {
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid #b8cedf;
+        }
+        .hotel-card-img {
+            background: #bdd0e4;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7a9dbf;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        .hotel-card-body { padding: 1rem 1.25rem 1.5rem; }
+        .hotel-card-name {
+            font-size: 1rem;
+            color: #1a2e4f;
+            margin-bottom: 0.5rem;
+        }
+        .hotel-card-info {
+            font-size: 0.85rem;
+            color: #3d5a80;
+            line-height: 1.6;
+        }
+        .hotel-card-link {
+            display: inline-block;
+            margin-top: 0.75rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #577C97;
+            text-decoration: none;
+        }
+        .hotel-card-link:hover { color: #1a2e4f; }
+
+        /* ══════════════════════════════
+           PRAKTICKÉ INFO
+        ══════════════════════════════ */
+        .prakticke-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2.5rem;
+            text-align: center;
+        }
+        .pi-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #577C97;
+            margin-bottom: 0.5rem;
+        }
+        .pi-value {
+            font-size: 1rem;
+            color: #1a2e4f;
+            line-height: 1.6;
+        }
+        .pi-value a {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px solid #577C97;
+        }
+
+        /* ══════════════════════════════
+           CTA
+        ══════════════════════════════ */
+        .cta-section {
+            text-align: center;
+            padding: 12rem 2rem;
+        }
         .rsvp-btn {
             display: inline-block;
-            margin-top: 2rem;
             padding: 0.8rem 2.5rem;
             font-family: Georgia, serif;
             font-size: 1rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            color: #fdf8f0;
-            background: #4a3728;
+            color: #dce8f2;
+            background: #1a2e4f;
             border: none;
             cursor: pointer;
             text-decoration: none;
             transition: background 0.2s;
         }
-        .rsvp-btn:hover { background: #8a6d5e; }
+        .rsvp-btn:hover { background: #577C97; }
+
+        /* ══════════════════════════════
+           MOBILE
+        ══════════════════════════════ */
+        @media (min-width: 721px) and (min-aspect-ratio: 4/3) {
+            .hero {
+                align-items: flex-end;
+                padding-bottom: 20vh;
+            }
+        }
+
+        @media (max-width: 720px) {
+            #top-nav {
+                gap: 1.2rem;
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding: 0.75rem 1.25rem;
+            }
+            h1 { font-size: 2rem; }
+            .split-grid { grid-template-columns: 1fr; }
+            .split-grid.reverse .split-img { order: 0; }
+            .countdown { gap: 1rem; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Coming Soon</h1>
-        <p>Wir freuen uns auf euch.</p>
-        <a href="#" class="rsvp-btn">RSVP</a>
+
+<div id="gate">
+    <div class="gate-panel gate-left">
+        <span class="gate-initial">V</span>
+        <div class="wax-seal">
+            <img src="{% static 'core/wax_seal_lilly_2.png' %}" alt="wax seal"/>
+        </div>
     </div>
+    <div class="gate-panel gate-right">
+        <span class="gate-initial">M</span>
+    </div>
+    <p class="gate-hint" id="gate-hint">klikněte pro otevření</p>
+</div>
+
+<nav id="top-nav">
+    <a href="#o-nas" class="nav-link">O nás</a>
+    <a href="#nas-mlyn" class="nav-link">Místo činu</a>
+    <a href="#harmonogram" class="nav-link">Harmonogram</a>
+    <a href="#dress-code" class="nav-link">Dress code</a>
+    <a href="#ubytovani" class="nav-link">Ubytování</a>
+    <a href="#prakticke-info" class="nav-link">Praktické info</a>
+    <a href="{% url 'rsvp' %}" class="nav-link nav-rsvp">Přijdeme!</a>
+</nav>
+
+<div id="main-page">
+
+    <div class="hero" style="background-image: url('{% static 'core/photos/init_portrait/IMG_1967.JPG' %}')">
+        <div class="container">
+            <h1>Viola &amp; Martin</h1>
+            <p>31. října 2026</p>
+            <p>Náš Mlýn, Ochoz</p>
+            <div class="countdown">
+                <div class="countdown-unit">
+                    <span class="countdown-number" id="cd-days">--</span>
+                    <span class="countdown-label" id="cd-days-label">dní</span>
+                </div>
+                <div class="countdown-unit">
+                    <span class="countdown-number" id="cd-hours">--</span>
+                    <span class="countdown-label" id="cd-hours-label">hodin</span>
+                </div>
+                <div class="countdown-unit">
+                    <span class="countdown-number" id="cd-minutes">--</span>
+                    <span class="countdown-label" id="cd-minutes-label">minut</span>
+                </div>
+                <div class="countdown-unit">
+                    <span class="countdown-number" id="cd-seconds">--</span>
+                    <span class="countdown-label" id="cd-seconds-label">sekund</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- O nás -->
+    <section id="o-nas" class="page-section">
+        <div class="section-inner">
+            <h2 class="section-title">O nás</h2>
+            <div class="split-grid">
+                <div class="split-img">
+                    {% if o_nas_photos %}
+                    <div class="carousel" id="carousel-o-nas">
+                        {% for photo in o_nas_photos %}
+                        <div class="carousel-slide">
+                            {% with "core/photos/o-nas/"|add:photo as photo_path %}
+                            <img src="{% static photo_path %}" alt="Foto {{ forloop.counter }}"{% if not forloop.first %} loading="lazy"{% endif %}>
+                            {% endwith %}
+                        </div>
+                        {% endfor %}
+                        <div class="carousel-counter"><span id="carousel-current">1</span> / {{ o_nas_photos|length }}</div>
+                    </div>
+                    {% else %}
+                    <div class="img-placeholder">fotografie</div>
+                    {% endif %}
+                </div>
+                <div class="split-text">
+                    <p class="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p class="section-text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Náš Mlýn -->
+    <section id="nas-mlyn" class="page-section section-alt">
+        <div class="section-inner">
+            <h2 class="section-title">Místo činu</h2>
+            <div class="split-grid reverse">
+                <div class="split-img">
+                    <img src="{% static 'core/photos/misto-cinu/nas_mlyn_5.jpg' %}" alt="Náš Mlýn" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;">
+                </div>
+                <div class="split-text">
+                    <p class="section-text"><strong>31. října 2026</strong>, od 12:30</p>
+                    <p class="section-text">Náš Mlýn, Ochoz 18, 798 52 Ochoz</p>
+                    <p class="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus convallis elit id ullamcorper pulvinar. Pellentesque facilisis. Nulla ligula. Etiam pharetra elit sed augue.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map -->
+    <div class="map-wrap">
+        <div class="section-inner">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Harmonogram -->
+    <section id="harmonogram" class="page-section">
+        <div class="section-inner">
+            <h2 class="section-title">Harmonogram</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="tl-time">12:00</span>
+                    <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                    <span class="tl-label">Příjezd a uvítání hostů</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="tl-time">12:30</span>
+                    <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                    <span class="tl-label">Svatební obřad</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="tl-time">13:00</span>
+                    <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                    <span class="tl-label">Gratulace &amp; společné foto</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="tl-time">14:00</span>
+                    <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                    <span class="tl-label">Slavnostní oběd</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="tl-time">17:00</span>
+                    <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                    <span class="tl-label">Dort &amp; přípitky</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="tl-time">18:00</span>
+                    <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                    <span class="tl-label">Zábava &amp; tanec</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dress code -->
+    <section id="dress-code" class="page-section section-alt">
+        <div class="section-inner">
+            <h2 class="section-title">Dress code</h2>
+            <p class="dress-note">Pokud se budete chtít sladit do barev svatby:</p>
+            <div class="color-palette">
+                <div class="swatch-wrap">
+                    <span class="swatch" style="background:#1a2e4f;"></span>
+                    <span class="swatch-label">Deep Navy</span>
+                </div>
+                <div class="swatch-wrap">
+                    <span class="swatch" style="background:#425a79;"></span>
+                    <span class="swatch-label">Ocean Blue</span>
+                </div>
+                <div class="swatch-wrap"><! 8ea9c1, >
+                    <span class="swatch" style="background:#b4d6ef;"></span>
+                    <span class="swatch-label">Soft Sky</span>
+                </div>
+                <div class="swatch-wrap">
+                    <span class="swatch" style="background:#d4b8c0;"></span>
+                    <span class="swatch-label">Old Rose</span>
+                </div>
+                <div class="swatch-wrap">
+                    <span class="swatch" style="background:#d9cfc4;"></span>
+                    <span class="swatch-label">Warm Sand</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ubytování -->
+    <section id="ubytovani" class="page-section">
+        <div class="section-inner">
+            <h2 class="section-title">Ubytování</h2>
+            <p class="section-text">V okolí Ochoze se nachází několik příjemných možností ubytování. Níže uvádíme výběr z těch nejbližších míst.</p>
+            <div class="hotel-cards">
+                <div class="hotel-card">
+                    <div class="hotel-card-img">fotografie</div>
+                    <div class="hotel-card-body">
+                        <p class="hotel-card-name">Hotel Lorem Ipsum</p>
+                        <p class="hotel-card-info">2lůžkové pokoje · 12 pokojů<br>~5 km od místa konání</p>
+                        <a href="#" class="hotel-card-link">Zobrazit →</a>
+                    </div>
+                </div>
+                <div class="hotel-card">
+                    <div class="hotel-card-img">fotografie</div>
+                    <div class="hotel-card-body">
+                        <p class="hotel-card-name">Penzion Dolor</p>
+                        <p class="hotel-card-info">Apartmány &amp; pokoje · 8 jednotek<br>~8 km od místa konání</p>
+                        <a href="#" class="hotel-card-link">Zobrazit →</a>
+                    </div>
+                </div>
+                <div class="hotel-card">
+                    <div class="hotel-card-img">fotografie</div>
+                    <div class="hotel-card-body">
+                        <p class="hotel-card-name">Chata Sit Amet</p>
+                        <p class="hotel-card-info">Rodinné apartmány · 6 jednotek<br>~10 km od místa konání</p>
+                        <a href="#" class="hotel-card-link">Zobrazit →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Praktické info -->
+    <section id="prakticke-info" class="page-section section-alt">
+        <div class="section-inner">
+            <h2 class="section-title">Praktické info</h2>
+            <div class="prakticke-grid">
+                <div>
+                    <p class="pi-label">Svědci</p>
+                    <p class="pi-value">Sabina Mojdlová<br>Matěj Myška</p>
+                </div>
+                <div>
+                    <p class="pi-label">Parkování</p>
+                    <p class="pi-value">Parkování přímo na místě</p>
+                </div>
+                <div>
+                    <p class="pi-label">Dary</p>
+                    <p class="pi-value">Obálkovou metodou</p>
+                </div>
+                <div>
+                    <p class="pi-label">Kontakt</p>
+                    <p class="pi-value"><a href="mailto:martin.mysska@gmail.com">martin.mysska@gmail.com</a></p>
+                </div>
+                <div>
+                    <p class="pi-label">Dogs friendly</p>
+                    <p class="pi-value">Jen nám dejte prosím vědět. Na místě budou další čtyřnožci</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom CTA -->
+    <div class="cta-section">
+        <a href="{% url 'rsvp' %}" class="rsvp-btn">Přijdeme!</a>
+    </div>
+
+</div>
+
+<script>
+    const gate = document.getElementById('gate');
+    const hint = document.getElementById('gate-hint');
+    let phase = 'idle';
+    let leafletReady = false;
+    let gateOpened = false;
+    let mapInitialized = false;
+
+    function initMap() {
+        if (mapInitialized) return;
+        mapInitialized = true;
+        const LAT = 49.598830, LNG = 16.929680;
+        const map = L.map('map').setView([LAT, LNG], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+        L.marker([LAT, LNG]).addTo(map);
+    }
+
+    function onLeafletReady() { leafletReady = true; if (gateOpened) initMap(); }
+    function onGateOpened() {
+        gateOpened = true;
+        document.getElementById('top-nav').classList.add('visible');
+        if (leafletReady) initMap();
+    }
+
+    function openGate() {
+        phase = 'opening';
+        hint.classList.add('hidden');
+        gate.classList.add('opening');
+        setTimeout(() => {
+            phase = 'done';
+            gate.classList.add('gone');
+            onGateOpened();
+        }, 1350);
+    }
+
+    function skipGate() {
+        phase = 'done';
+        gate.classList.add('gone');
+        onGateOpened();
+    }
+
+    document.addEventListener('click', () => {
+        if (phase === 'idle') openGate();
+        else if (phase === 'opening') skipGate();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === 'Escape' || e.key === ' ') {
+            if (phase === 'idle') openGate();
+            else if (phase === 'opening') skipGate();
+        }
+    });
+
+    // ── Countdown ──
+    const WEDDING = new Date('2026-10-31T12:30:00+01:00');
+
+    function pluralCs(n, one, few, many) {
+        if (n === 1) return one;
+        if (n >= 2 && n <= 4) return few;
+        return many;
+    }
+
+    function tick() {
+        const diff = WEDDING - new Date();
+        if (diff <= 0) return;
+        const days    = Math.floor(diff / 86400000);
+        const hours   = Math.floor((diff % 86400000) / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+
+        document.getElementById('cd-days').textContent    = days;
+        document.getElementById('cd-hours').textContent   = hours;
+        document.getElementById('cd-minutes').textContent = minutes;
+        document.getElementById('cd-seconds').textContent = seconds;
+
+        document.getElementById('cd-days-label').textContent    = pluralCs(days,    'den',    'dny',    'dní');
+        document.getElementById('cd-hours-label').textContent   = pluralCs(hours,   'hodina', 'hodiny', 'hodin');
+        document.getElementById('cd-minutes-label').textContent = pluralCs(minutes, 'minuta', 'minuty', 'minut');
+        document.getElementById('cd-seconds-label').textContent = pluralCs(seconds, 'sekunda','sekundy','sekund');
+    }
+
+    tick();
+    setInterval(tick, 1000);
+
+    // ── Carousel ──
+    (function () {
+        const container = document.getElementById('carousel-o-nas');
+        if (!container) return;
+        const slides  = container.querySelectorAll('.carousel-slide');
+        const counter = document.getElementById('carousel-current');
+        if (!slides.length) return;
+        let current = 0;
+
+        function goTo(n) {
+            slides[current].classList.remove('active');
+            current = (n + slides.length) % slides.length;
+            slides[current].classList.add('active');
+            if (counter) counter.textContent = current + 1;
+        }
+
+        slides[0].classList.add('active');
+        container.addEventListener('click', () => goTo(current + 1));
+        setInterval(() => goTo(current + 1), 4500);
+
+        container.querySelectorAll('.carousel-slide img').forEach(img => {
+            const apply = () => {
+                if (img.naturalHeight > img.naturalWidth) img.style.objectFit = 'contain';
+            };
+            if (img.complete) apply();
+            else img.addEventListener('load', apply);
+        });
+    }());
+
+    // ── Map (load Leaflet eagerly, init only after gate opens) ──
+    const leafletScript = document.createElement('script');
+    leafletScript.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    leafletScript.onload = onLeafletReady;
+    document.head.appendChild(leafletScript);
+</script>
 </body>
 </html>
