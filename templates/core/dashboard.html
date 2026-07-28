@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Přihlášky — Viola &amp; Martin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Georgia, serif; background: #e1eefc; color: #1a2e4f; padding: 2.5rem 2rem; }
+        h1 { font-size: 1.8rem; font-weight: normal; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+        .subtitle { font-size: 0.85rem; color: #577C97; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2.5rem; }
+
+        .csv-links { margin-bottom: 2.5rem; display: flex; gap: 1rem; }
+        .csv-btn {
+            font-family: Georgia, serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #dce8f2;
+            background: #1a2e4f;
+            padding: 0.5rem 1.2rem;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .csv-btn:hover { background: #577C97; }
+
+        .section { margin-bottom: 2.5rem; }
+        .section-heading {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #577C97;
+            border-bottom: 1px solid #b8cedf;
+            padding-bottom: 0.4rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .stats { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .stat-box {
+            background: rgba(255,255,255,0.6);
+            border: 1px solid #b8cedf;
+            padding: 1.2rem 1.8rem;
+            min-width: 110px;
+            text-align: center;
+        }
+        .stat-number { font-size: 2.2rem; font-weight: normal; color: #1a2e4f; line-height: 1; }
+        .stat-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #577C97; margin-top: 0.4rem; }
+
+        .kv-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        .kv-row { display: flex; align-items: baseline; gap: 0.75rem; }
+        .kv-key { font-size: 0.95rem; color: #3d5a80; min-width: 220px; }
+        .kv-val { font-size: 1.1rem; color: #1a2e4f; }
+
+        /* Horizontal bars */
+        .bar-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.45rem; }
+        .bar-label { font-size: 0.9rem; color: #3d5a80; min-width: 200px; }
+        .bar-track { flex: 1; max-width: 420px; background: rgba(184,206,223,0.35); height: 18px; }
+        .bar-fill { height: 100%; background: #3d5a80; }
+        .bar-count { font-size: 0.85rem; color: #1a2e4f; min-width: 24px; text-align: right; }
+
+        /* Ratio bar (accommodation) */
+        .ratio-wrap { max-width: 500px; }
+        .ratio-track { display: flex; height: 28px; background: rgba(184,206,223,0.35); }
+        .ratio-home { background: #1a2e4f; }
+        .ratio-help { background: #8ea9c1; }
+        .ratio-legend { display: flex; gap: 1.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+        .ratio-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; color: #3d5a80; }
+        .ratio-dot { width: 12px; height: 12px; flex-shrink: 0; }
+        .dot-home { background: #1a2e4f; }
+        .dot-help { background: #8ea9c1; }
+
+        .song-list { list-style: none; }
+        .song-list li { font-size: 0.95rem; color: #3d5a80; padding: 0.25rem 0; border-bottom: 1px solid rgba(184,206,223,0.4); }
+        .song-list li:last-child { border-bottom: none; }
+        .song-who { font-size: 0.75rem; color: #577C97; margin-left: 0.5rem; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th {
+            text-align: left;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #577C97;
+            border-bottom: 2px solid #b8cedf;
+            padding: 0.4rem 0.6rem;
+        }
+        td { padding: 0.55rem 0.6rem; border-bottom: 1px solid rgba(184,206,223,0.35); color: #3d5a80; vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+        .family-row td { background: rgba(255,255,255,0.5); color: #1a2e4f; font-size: 0.8rem; }
+        .name-cell { color: #1a2e4f; }
+        .empty { color: #a0bcd4; font-style: italic; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<h1>Viola &amp; Martin — Přihlášky</h1>
+<p class="subtitle">31. října 2026 &nbsp;·&nbsp; Náš Mlýn, Ochoz</p>
+
+<div class="csv-links">
+    <a href="{% url 'csv_submissions' %}" class="csv-btn">CSV — přihlášky</a>
+    <a href="{% url 'csv_persons' %}" class="csv-btn">CSV — osoby</a>
+</div>
+
+<!-- Headcount -->
+<div class="section">
+    <p class="section-heading">Celkem</p>
+    <div class="stats">
+        <div class="stat-box">
+            <div class="stat-number">{{ total_families }}</div>
+            <div class="stat-label">rodin</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">{{ total_persons }}</div>
+            <div class="stat-label">hostů celkem</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">{{ adults }}</div>
+            <div class="stat-label">dospělých</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">{{ children }}</div>
+            <div class="stat-label">dětí</div>
+        </div>
+    </div>
+</div>
+
+<!-- Accommodation -->
+<div class="section">
+    <p class="section-heading">Ubytování</p>
+    {% if accom_total %}
+    <div class="ratio-wrap">
+        <div class="ratio-track">
+            <div class="ratio-home" style="width: {% widthratio want_sleep accom_total 100 %}%"></div>
+            <div class="ratio-help" style="width: {% widthratio want_help accom_total 100 %}%"></div>
+        </div>
+        <div class="ratio-legend">
+            <span class="ratio-item"><span class="ratio-dot dot-home"></span>Spí doma: {{ want_sleep }} lidí ({{ want_sleep_fam }} rod.)</span>
+            <span class="ratio-item"><span class="ratio-dot dot-help"></span>Hledá ubytování: {{ want_help }} lidí ({{ want_help_fam }} rod.)</span>
+        </div>
+    </div>
+    {% else %}
+    <p class="empty">Zatím žádné odpovědi</p>
+    {% endif %}
+    {% if accom_counts %}
+    <div class="kv-list" style="margin-top: 1.2rem;">
+        {% for name, persons, families in accom_counts %}
+        <div class="kv-row">
+            <span class="kv-key" style="padding-left:1rem;">↳ {{ name }}</span>
+            <span class="kv-val">{{ persons }} lidí ({{ families }} rod.)</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Catering -->
+<div class="section">
+    <p class="section-heading">Stravování — diety</p>
+    {% if diet_counts and total_persons %}
+    {% for name, count in diet_counts %}
+    <div class="bar-row">
+        <span class="bar-label">{{ name }}</span>
+        <div class="bar-track"><div class="bar-fill" style="width: {% widthratio count total_persons 100 %}%"></div></div>
+        <span class="bar-count">{{ count }}</span>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="empty">Žádné diety</p>
+    {% endif %}
+</div>
+
+<div class="section">
+    <p class="section-heading">Stravování — alkohol</p>
+    {% if alcohol_counts and total_persons %}
+    {% for name, count in alcohol_counts %}
+    <div class="bar-row">
+        <span class="bar-label">{{ name }}</span>
+        <div class="bar-track"><div class="bar-fill" style="width: {% widthratio count total_persons 100 %}%"></div></div>
+        <span class="bar-count">{{ count }}</span>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="empty">Žádné preference</p>
+    {% endif %}
+</div>
+
+<!-- Songs -->
+<div class="section">
+    <p class="section-heading">Písničky na přání</p>
+    {% if songs %}
+    <ul class="song-list">
+        {% for song, who in songs %}
+        <li>{{ song }}<span class="song-who">— {{ who }}</span></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">Zatím žádné</p>
+    {% endif %}
+</div>
+
+<!-- Full list -->
+<div class="section">
+    <p class="section-heading">Všechny přihlášky</p>
+    {% if submissions %}
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Jméno</th>
+                <th>Dítě</th>
+                <th>Věk</th>
+                <th>Dieta</th>
+                <th>Alkohol</th>
+                <th>Ubytování</th>
+                <th>Vzkaz / Písnička</th>
+                <th>Přihlášeno</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in submissions %}
+            <tr class="family-row">
+                <td colspan="6"><strong>Rodina #{{ s.pk }}</strong>
+                    {% if s.accom_want == 'home' or s.accom_want == 'sleep' %}· spí doma{% elif s.accom_want == 'help' %}· hledá ubytování{% endif %}
+                    {% if s.accom_pref %}({{ s.accom_pref }}){% endif %}
+                </td>
+                <td></td>
+                <td>{% if s.message %}{{ s.message }}{% endif %}{% if s.song_request %} ♪ {{ s.song_request }}{% endif %}</td>
+                <td>{{ s.submitted_at|date:"d.m. H:i" }}</td>
+            </tr>
+            {% for p in s.persons.all %}
+            <tr>
+                <td></td>
+                <td class="name-cell">{{ p.name }}</td>
+                <td>{% if p.is_child %}ano{% endif %}</td>
+                <td>{% if p.age %}{{ p.age }}{% endif %}</td>
+                <td>{{ p.diet }}{% if p.other_diet %} ({{ p.other_diet }}){% endif %}</td>
+                <td>{{ p.alcohol }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="empty">Zatím nikdo nepřihlášen.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

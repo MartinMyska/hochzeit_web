@@ -393,16 +393,9 @@
             background: rgba(255, 255, 255, 0.55);
             border: 1px solid #b8cedf;
         }
-        .hotel-card-img {
-            background: #bdd0e4;
-            height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #7a9dbf;
-            font-size: 0.7rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
+        .hotel-card .carousel {
+            aspect-ratio: unset;
+            height: 180px;
         }
         .hotel-card-body { padding: 1rem 1.25rem 1.5rem; }
         .hotel-card-name {
@@ -575,10 +568,12 @@
                     {% endif %}
                 </div>
                 <div class="split-text">
-                    <p class="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                    <p class="section-text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p class="section-text">Poznali jsme se na prahu dospělosti a od té doby jsme svět objevovali společně. Z nenápadného začátku se postupně vyvinul vztah, který nás provází všemi důležitými okamžiky našich životů.</p>
+                    <p class="section-text">Společně jsme zvládli všechno, co nám osud postavil do cesty – školu, práci, odloučení, návraty i nové začátky. Naučili jsme se stát pevně při sobě ve chvílích radostných i těch náročnějších, a právě díky tomu jsme dnes tam, kde jsme.</p>
+                    <p class="section-text">Naše společná cesta nás zavedla až na sever, který jsme si oba naprosto zamilovali. A právě tam, na zamrzlém jezeře při zimním západu slunce, zazněla otázka, která změnila úplně všechno — a já na ni s tou největší radostí řekla ANO!</p>
                 </div>
             </div>
+            <p style="text-align: center; margin-top: 2.5rem; font-size: 1.05rem; line-height: 1.85; color: #3d5a80; font-weight: bold;">„Štěstí lze nalézt i v těch nejtemnějších časech, pokud nezapomeneme rozsvítit světlo. My jsme to své našli jeden v druhém."</p>
         </div>
     </section>
 
@@ -593,7 +588,8 @@
                 <div class="split-text">
                     <p class="section-text"><strong>31. října 2026</strong>, od 12:30</p>
                     <p class="section-text">Náš Mlýn, Ochoz 18, 798 52 Ochoz</p>
-                    <p class="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus convallis elit id ullamcorper pulvinar. Pellentesque facilisis. Nulla ligula. Etiam pharetra elit sed augue.</p>
+                    <p class="section-text">Říká se, že ta nejkouzelnější místa nebývají vidět na první pohled. Náš Mlýn je přesně jedním z nich. Schovaný mezi stromy, v klidném údolí, kde mobilní signál trochu slábne, daleko od každodenního shonu, se na jeden den promění v náš malý svět.</p>
+                    <p class="section-text">Právě tady proběhne úplně všechno – obřad, hostina, první tanec i večerní oslava. To nejdůležitější ale netvoří rybník, les ani starý mlýn. Tvoří ho lidé, se kterými tenhle den můžeme sdílet. Budeme moc rádi, když mezi nimi budete i Vy.</p>
                 </div>
             </div>
         </div>
@@ -681,28 +677,68 @@
             <h2 class="section-title">Ubytování</h2>
             <p class="section-text">V okolí Ochoze se nachází několik příjemných možností ubytování. Níže uvádíme výběr z těch nejbližších míst.</p>
             <div class="hotel-cards">
-                <div class="hotel-card">
-                    <div class="hotel-card-img">fotografie</div>
+<div class="hotel-card">
+                    <div class="carousel">
+                        {% for photo in ubyt_photos.1 %}
+                        <div class="carousel-slide">
+                            {% with "core/photos/ubytovani-2/"|add:photo as photo_path %}
+                            <img src="{% static photo_path %}" alt="Foto {{ forloop.counter }}"{% if not forloop.first %} loading="lazy"{% endif %}>
+                            {% endwith %}
+                        </div>
+                        {% endfor %}
+                        <div class="carousel-counter"><span>1</span> / {{ ubyt_photos.1|length }}</div>
+                    </div>
                     <div class="hotel-card-body">
-                        <p class="hotel-card-name">Hotel Lorem Ipsum</p>
-                        <p class="hotel-card-info">2lůžkové pokoje · 12 pokojů<br>~5 km od místa konání</p>
-                        <a href="#" class="hotel-card-link">Zobrazit →</a>
+                        <p class="hotel-card-name">Apartmán Spinačka</p>
+                        <p class="hotel-card-info">7 min autem · Konice · 6 lidí</p>
                     </div>
                 </div>
                 <div class="hotel-card">
-                    <div class="hotel-card-img">fotografie</div>
+                    <div class="carousel">
+                        {% for photo in ubyt_photos.2 %}
+                        <div class="carousel-slide">
+                            {% with "core/photos/ubytovani-3/"|add:photo as photo_path %}
+                            <img src="{% static photo_path %}" alt="Foto {{ forloop.counter }}"{% if not forloop.first %} loading="lazy"{% endif %}>
+                            {% endwith %}
+                        </div>
+                        {% endfor %}
+                        <div class="carousel-counter"><span>1</span> / {{ ubyt_photos.2|length }}</div>
+                    </div>
                     <div class="hotel-card-body">
-                        <p class="hotel-card-name">Penzion Dolor</p>
-                        <p class="hotel-card-info">Apartmány &amp; pokoje · 8 jednotek<br>~8 km od místa konání</p>
-                        <a href="#" class="hotel-card-link">Zobrazit →</a>
+                        <p class="hotel-card-name">Vila Galant</p>
+                        <p class="hotel-card-info">6 min autem · Konice · 2 apartmány (8 + 3 lidé)</p>
                     </div>
                 </div>
                 <div class="hotel-card">
-                    <div class="hotel-card-img">fotografie</div>
+                    <div class="carousel">
+                        {% for photo in ubyt_photos.3 %}
+                        <div class="carousel-slide">
+                            {% with "core/photos/ubytovani-4/"|add:photo as photo_path %}
+                            <img src="{% static photo_path %}" alt="Foto {{ forloop.counter }}"{% if not forloop.first %} loading="lazy"{% endif %}>
+                            {% endwith %}
+                        </div>
+                        {% endfor %}
+                        <div class="carousel-counter"><span>1</span> / {{ ubyt_photos.3|length }}</div>
+                    </div>
                     <div class="hotel-card-body">
-                        <p class="hotel-card-name">Chata Sit Amet</p>
-                        <p class="hotel-card-info">Rodinné apartmány · 6 jednotek<br>~10 km od místa konání</p>
-                        <a href="#" class="hotel-card-link">Zobrazit →</a>
+                        <p class="hotel-card-name">Penzion Svatý Kryštof</p>
+                        <p class="hotel-card-info">6 min autem · Konice · 3 pokoje pro 7 lidí (3 + 2 + 2)</p>
+                    </div>
+                </div>
+                <div class="hotel-card">
+                    <div class="carousel">
+                        {% for photo in ubyt_photos.4 %}
+                        <div class="carousel-slide">
+                            {% with "core/photos/ubytovani-5/"|add:photo as photo_path %}
+                            <img src="{% static photo_path %}" alt="Foto {{ forloop.counter }}"{% if not forloop.first %} loading="lazy"{% endif %}>
+                            {% endwith %}
+                        </div>
+                        {% endfor %}
+                        <div class="carousel-counter"><span>1</span> / {{ ubyt_photos.4|length }}</div>
+                    </div>
+                    <div class="hotel-card-body">
+                        <p class="hotel-card-name">Penzion Hospůdka na chalupě</p>
+                        <p class="hotel-card-info">7 min autem · 9 lidí</p>
                     </div>
                 </div>
             </div>
@@ -833,31 +869,33 @@
 
     // ── Carousel ──
     (function () {
-        const container = document.getElementById('carousel-o-nas');
-        if (!container) return;
-        const slides  = container.querySelectorAll('.carousel-slide');
-        const counter = document.getElementById('carousel-current');
-        if (!slides.length) return;
-        let current = 0;
+        function initCarousel(container) {
+            const slides = container.querySelectorAll('.carousel-slide');
+            const counterSpan = container.querySelector('.carousel-counter span');
+            if (!slides.length) return;
+            let current = 0;
 
-        function goTo(n) {
-            slides[current].classList.remove('active');
-            current = (n + slides.length) % slides.length;
-            slides[current].classList.add('active');
-            if (counter) counter.textContent = current + 1;
+            function goTo(n) {
+                slides[current].classList.remove('active');
+                current = (n + slides.length) % slides.length;
+                slides[current].classList.add('active');
+                if (counterSpan) counterSpan.textContent = current + 1;
+            }
+
+            slides[0].classList.add('active');
+            container.addEventListener('click', () => goTo(current + 1));
+            setInterval(() => goTo(current + 1), 4500);
+
+            container.querySelectorAll('.carousel-slide img').forEach(img => {
+                const apply = () => {
+                    if (img.naturalHeight > img.naturalWidth) img.style.objectFit = 'contain';
+                };
+                if (img.complete) apply();
+                else img.addEventListener('load', apply);
+            });
         }
 
-        slides[0].classList.add('active');
-        container.addEventListener('click', () => goTo(current + 1));
-        setInterval(() => goTo(current + 1), 4500);
-
-        container.querySelectorAll('.carousel-slide img').forEach(img => {
-            const apply = () => {
-                if (img.naturalHeight > img.naturalWidth) img.style.objectFit = 'contain';
-            };
-            if (img.complete) apply();
-            else img.addEventListener('load', apply);
-        });
+        document.querySelectorAll('.carousel').forEach(initCarousel);
     }());
 
     // ── Map (load Leaflet eagerly, init only after gate opens) ──
