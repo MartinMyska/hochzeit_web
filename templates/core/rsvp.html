@@ -620,7 +620,11 @@
     }
 
     function toggleAccom(checked) {
-        document.getElementById('accom-options-wrap').classList.toggle('hidden', !checked);
+        const wrap = document.getElementById('accom-options-wrap');
+        wrap.classList.toggle('hidden', !checked);
+        if (!checked) {
+            wrap.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        }
     }
 
     // Start with one person
