@@ -7,6 +7,8 @@
     <title>Viola &amp; Martin</title>
     <link rel="icon" type="image/png" href="{% static 'core/wax_seal_lilly_2.png' %}">
     <link rel="preload" as="image" href="{% static 'core/wax_seal_lilly_2.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Clicker+Script&display=swap">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -131,9 +133,9 @@
             pointer-events: auto;
         }
         .nav-link {
-            font-size: 0.91rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
+            font-family: 'Corinthia', cursive;
+            font-size: 1.6rem;
+            letter-spacing: 0;
             color: #3d5a80;
             text-decoration: none;
             transition: color 0.2s;
@@ -141,6 +143,10 @@
         }
         .nav-link:hover { color: #1a2e4f; }
         .nav-rsvp {
+            font-family: Georgia, serif;
+            font-size: 0.91rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
             border: 1px solid #3d5a80;
             padding: 0.35rem 1.1rem;
             color: #1a2e4f;
@@ -180,11 +186,13 @@
         .container { text-align: center; padding: 2rem; }
 
         h1 {
-            font-size: 3rem;
+            font-family: 'Corinthia', cursive;
+            font-size: 8.25rem;
             font-weight: normal;
-            letter-spacing: 0.1em;
+            letter-spacing: 0;
             margin-bottom: 1rem;
         }
+        h1 .amp { font-family: 'Clicker Script', cursive; }
 
         .container p { font-size: 1.2rem; color: #3d5a80; }
 
@@ -227,9 +235,10 @@
         }
 
         .section-title {
-            font-size: 2rem;
+            font-family: 'Corinthia', cursive;
+            font-size: 4.2rem;
             font-weight: normal;
-            letter-spacing: 0.08em;
+            letter-spacing: 0;
             color: #1a2e4f;
             margin-bottom: 2.5rem;
             text-align: center;
@@ -491,7 +500,7 @@
                 justify-content: flex-start;
                 padding: 0.75rem 1.25rem;
             }
-            h1 { font-size: 2rem; }
+            h1 { font-size: 3rem; }
             .split-grid { grid-template-columns: 1fr; }
             .split-grid.reverse .split-img { order: 0; }
             .countdown { gap: 1rem; }
@@ -527,7 +536,7 @@
 
     <div class="hero" style="background-image: url('{% static 'core/photos/init_portrait/IMG_1967.JPG' %}')">
         <div class="container">
-            <h1>Viola &amp; Martin</h1>
+            <h1>Viola <span class="amp">&amp;</span> Martin</h1>
             <p>31. října 2026</p>
             <p>Náš Mlýn, Ochoz</p>
             <div class="countdown">
@@ -573,8 +582,8 @@
                     {% endif %}
                 </div>
                 <div class="split-text">
-                    <p class="section-text">Poznali jsme se na prahu dospělosti a od té doby jsme svět objevovali společně. Z nenápadného začátku se postupně vyvinul vztah, který nás provází všemi důležitými okamžiky našich životů.</p>
-                    <p class="section-text">Společně jsme zvládli všechno, co nám osud postavil do cesty – školu, práci, odloučení, návraty i nové začátky. Naučili jsme se stát pevně při sobě ve chvílích radostných i těch náročnějších, a právě díky tomu jsme dnes tam, kde jsme.</p>
+                    <p class="section-text">Poznali jsme se na prahu dospělosti, kdy jsme netušili, že z našeho nenápadného začátku jednou budou roky společných cest, zážitků, změn, návratů a plánů do budoucna. A že ze „spolu“ se mezitím stane naše nejoblíbenější místo.</p>
+                    <p class="section-text">Naučili jsme se, že být spolu neznamená jen sdílet ty krásné chvíle, ale být tím druhým i tehdy, když věci nejsou úplně jednoduché. Právě díky všem těm malým i velkým okamžikům jsme dnes tam, kde jsme.</p>
                     <p class="section-text">Naše společná cesta nás zavedla až na sever, který jsme si oba naprosto zamilovali. A právě tam, na zamrzlém jezeře při zimním západu slunce, zazněla otázka, která změnila úplně všechno — a já na ni s tou největší radostí řekla ANO!</p>
                 </div>
             </div>
@@ -591,7 +600,7 @@
                     <img src="{% static 'core/photos/misto-cinu/nas_mlyn_5.jpg' %}" alt="Náš Mlýn" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;">
                 </div>
                 <div class="split-text">
-                    <p class="section-text"><strong>31. října 2026</strong>, od 12:00</p>
+                    <p class="section-text"><strong>31. října 2026</strong>, ve 12:00</p>
                     <p class="section-text">Náš Mlýn, Ochoz 18, 798 52 Ochoz</p>
                     <p class="section-text">Říká se, že ta nejkouzelnější místa nebývají vidět na první pohled. Náš Mlýn je přesně jedním z nich. Schovaný mezi stromy, v klidném údolí, kde mobilní signál trochu slábne, daleko od každodenního shonu, se na jeden den promění v náš malý svět.</p>
                     <p class="section-text">Právě tady proběhne úplně všechno – obřad, hostina, první tanec i večerní oslava. To nejdůležitější ale netvoří rybník, les ani starý mlýn. Tvoří ho lidé, se kterými tenhle den můžeme sdílet. Budeme moc rádi, když mezi nimi budete i Vy.</p>
@@ -769,7 +778,7 @@
                 </div>
 
             </div>
-            <p style="text-align: center; font-style: italic; margin-top: 2rem; color: #3d5a80;">Lámete si hlavu se svatebním darem? Nejvíc nás potěšíte svou přítomností! Pokud byste nám přesto chtěli něco věnovat, budeme vděční, pokud to uděláte obálkovou metodou.</p>
+            <p style="text-align: center; font-style: italic; margin-top: 2rem; color: #3d5a80;">Lámete si hlavu se svatebním darem? Nejvíc nás potěšíte svou přítomností! Pokud byste nám chtěli udělat radost i dárkem, budeme vděční za příspěvek do obálky na naše další společné dobrodružství</p>
         </div>
     </section>
 
