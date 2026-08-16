@@ -194,6 +194,10 @@
             margin-bottom: 1rem;
         }
         h1 .amp { font-family: 'Clicker Script', cursive; }
+        @media (max-width: 500px) {
+            h1 .h1-word, h1 .amp { display: block; line-height: 1.15; }
+            h1 .h1-indent { display: none; }
+        }
 
         .container p { font-size: 1.2rem; color: #1a2e4f; }
 
@@ -616,7 +620,7 @@
 
     <div class="hero" style="background-image: url('{% static 'core/photos/init_portrait/IMG_1967.JPG' %}')">
         <div class="container">
-            <h1>&nbsp;&nbsp;&nbsp;&nbsp;Viola <span class="amp">&amp;</span> Martin</h1>
+            <h1><span class="h1-word"><span class="h1-indent">&nbsp;&nbsp;&nbsp;&nbsp;</span>Viola</span> <span class="amp">&amp;</span> <span class="h1-word">Martin</span></h1>
             <p>31. října 2026</p>
             <p>Náš Mlýn, Ochoz</p>
             <div class="countdown">
