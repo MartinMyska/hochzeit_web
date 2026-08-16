@@ -337,7 +337,8 @@
 </head>
 <body>
 
-<div class="page-header">
+<div class="page-header" style="position: relative;">
+    <img src="{% static 'core/photos/lily_drawings/Lily_drawing_9.png' %}" alt="" style="position: absolute; top: 3rem; right: calc(50% - 340px + 2rem); height: 120px; opacity: 0.55; pointer-events: none;">
     <h1>Přijdeme!</h1>
     <p>Viola &amp; Martin · 31. října 2026</p>
     <a href="{% url 'index' %}" class="back-link">← zpět</a>
@@ -436,7 +437,8 @@
     </div>
 
     <!-- ── Submit ── -->
-    <div class="submit-wrap">
+    <div class="submit-wrap" style="position: relative;">
+        <img src="{% static 'core/photos/lily_drawings/Lily_drawing_9.png' %}" alt="" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); height: 100px; opacity: 0.55; pointer-events: none;">
         <button type="submit" class="btn-submit" id="btn-submit">Odeslat přihlášku</button>
     </div>
 </form>
@@ -496,6 +498,7 @@
                 <label><input type="checkbox"><span class="pill">Červené víno</span></label>
                 <label><input type="checkbox"><span class="pill">Bílé víno</span></label>
                 <label><input type="checkbox"><span class="pill">Prosecco</span></label>
+                <label><input type="checkbox"><span class="pill">Svařák</span></label>
                 <label><input type="checkbox"><span class="pill">Drinky</span></label>
                 <label><input type="checkbox"><span class="pill">Myškovic sklep</span></label>
                 <label><input type="checkbox"><span class="pill">Jiné tvrdé</span></label>

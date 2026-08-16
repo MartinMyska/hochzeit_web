@@ -116,10 +116,8 @@
             position: sticky;
             top: 0;
             z-index: 50;
-            background: rgba(225, 238, 252, 0.93);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: 1px solid rgba(61, 90, 128, 0.15);
+            background: #1a2e4f;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -137,26 +135,26 @@
             font-family: 'WindSong', cursive;
             font-size: 1.6rem;
             letter-spacing: 0;
-            color: #3d5a80;
+            color: #ffffff;
             text-decoration: none;
             transition: color 0.2s;
             white-space: nowrap;
         }
-        .nav-link:hover { color: #1a2e4f; }
+        .nav-link:hover { color: #8ea9c1; }
         .nav-rsvp {
             font-family: Georgia, serif;
             font-size: 0.91rem;
             letter-spacing: 0.2em;
             text-transform: uppercase;
-            border: 1px solid #3d5a80;
+            border: 1px solid #ffffff;
             padding: 0.35rem 1.1rem;
-            color: #1a2e4f;
+            color: #ffffff;
             transition: background 0.2s, color 0.2s, border-color 0.2s;
         }
         .nav-rsvp:hover {
-            background: #1a2e4f;
-            color: #dce8f2;
-            border-color: #1a2e4f;
+            background: #ffffff;
+            color: #1a2e4f;
+            border-color: #ffffff;
         }
 
         /* ══════════════════════════════
@@ -196,7 +194,7 @@
         }
         h1 .amp { font-family: 'Clicker Script', cursive; }
 
-        .container p { font-size: 1.2rem; color: #3d5a80; }
+        .container p { font-size: 1.2rem; color: #1a2e4f; }
 
         .countdown {
             display: flex;
@@ -216,7 +214,7 @@
             font-size: 0.75rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            color: #3d5a80;
+            color: #1a2e4f;
         }
 
         /* ══════════════════════════════
@@ -225,9 +223,30 @@
         .page-section {
             padding: 5rem 0;
             scroll-margin-top: 52px;
+            position: relative;
         }
+        .section-inner { position: relative; z-index: 1; }
+        .lily-left {
+            position: absolute;
+            left: max(2rem, calc(50% - 660px));
+            top: 3rem;
+            height: 160px;
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .lily-right {
+            position: absolute;
+            right: max(2rem, calc(50% - 660px));
+            top: 3rem;
+            height: 160px;
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @media (max-width: 768px) { .lily-left, .lily-right { display: none; } }
         .page-section.section-alt {
-            background: rgba(193, 215, 238, 0.25);
+            background: rgba(212, 197, 176, 0.28);
         }
 
         .section-inner {
@@ -312,7 +331,7 @@
         ══════════════════════════════ */
         .map-wrap {
             scroll-margin-top: 52px;
-            background: rgba(193, 215, 238, 0.25);
+            background: rgba(212, 197, 176, 0.28);
             padding-bottom: 3rem;
         }
         #map { width: 100%; height: 450px; }
@@ -332,7 +351,7 @@
             top: 0;
             bottom: 0;
             width: 2px;
-            background: #a8c0d8;
+            background: #1a2e4f;
             transform: translateX(-50%);
         }
         .timeline-item {
@@ -357,8 +376,8 @@
             flex-shrink: 0;
         }
         .tl-card {
-            background: rgba(193, 215, 238, 0.35);
-            border: 1px solid #b8cedf;
+            background: transparent;
+            border: 2px solid transparent;
             border-radius: 6px;
             padding: 0.7rem 1rem;
             display: flex;
@@ -372,11 +391,15 @@
         .timeline-item:nth-child(even) .tl-card {
             grid-column: 1;
             grid-row: 1;
+            flex-direction: row-reverse;
+        }
+        .timeline-item:nth-child(even) .tl-card > div {
+            text-align: right;
         }
         .tl-icon {
             font-size: 2.2rem;
             color: transparent;
-            -webkit-text-stroke: 1.5px #8ea9c1;
+            -webkit-text-stroke: 1.5px #1a2e4f;
             flex-shrink: 0;
             width: 2.4rem;
             text-align: center;
@@ -390,7 +413,7 @@
         }
         .tl-label {
             font-size: 0.85rem;
-            color: #3d5a80;
+            color: #1a2e4f;
             line-height: 1.3;
         }
         @media (max-width: 600px) {
@@ -403,6 +426,10 @@
             .timeline-item:nth-child(even) .tl-card {
                 grid-column: 2;
                 grid-row: 1;
+                flex-direction: row;
+            }
+            .timeline-item:nth-child(even) .tl-card > div {
+                text-align: left;
             }
         }
 
@@ -513,6 +540,7 @@
         .cta-section {
             text-align: center;
             padding: 12rem 2rem;
+            background: rgba(212, 197, 176, 0.35);
         }
         .rsvp-btn {
             display: inline-block;
@@ -574,6 +602,7 @@
 </div>
 
 <nav id="top-nav">
+    <img src="{% static 'core/photos/lily_drawings/Lily_drawing_9.png' %}" alt="" style="height: 36px; opacity: 0.65; pointer-events: none;">
     <a href="#o-nas" class="nav-link">O nás</a>
     <a href="#nas-mlyn" class="nav-link">Místo činu</a>
     <a href="#harmonogram" class="nav-link">Harmonogram</a>
@@ -612,7 +641,8 @@
     </div>
 
     <!-- O nás -->
-    <section id="o-nas" class="page-section">
+    <section id="o-nas" class="page-section" style="background: rgba(212, 197, 176, 0.35);">
+        <img class="lily-left" src="{% static 'core/photos/lily_drawings/Lily_drawing_7.png' %}" alt="" style="left: calc(50% - 640px); top: 36rem;">
         <div class="section-inner">
             <h2 class="section-title">O nás</h2>
             <div class="split-grid">
@@ -634,16 +664,17 @@
                 </div>
                 <div class="split-text">
                     <p class="section-text">Poznali jsme se na prahu dospělosti, kdy jsme netušili, že z našeho nenápadného začátku jednou budou roky společných cest, zážitků, změn, návratů a plánů do budoucna. A že ze „spolu“ se mezitím stane naše nejoblíbenější místo.</p>
-                    <p class="section-text">Naučili jsme se, že být spolu neznamená jen sdílet ty krásné chvíle, ale být tím druhým i tehdy, když věci nejsou úplně jednoduché. Právě díky všem těm malým i velkým okamžikům jsme dnes tam, kde jsme.</p>
+                    <p class="section-text">Naučili jsme se, že být spolu neznamená jen sdílet ty krásné chvíle, ale být s tím druhým i tehdy, když věci nejsou úplně jednoduché. Právě díky všem těm malým i velkým okamžikům jsme dnes tam, kde jsme.</p>
                     <p class="section-text">Naše společná cesta nás zavedla až na sever, který jsme si oba naprosto zamilovali. A právě tam, na zamrzlém jezeře při zimním západu slunce, zazněla otázka, která změnila úplně všechno — a já na ni s tou největší radostí řekla ANO!</p>
                 </div>
             </div>
-            <p style="text-align: center; margin-top: 2.5rem; font-size: 1.47rem; line-height: 1.85; color: #3d5a80; font-family: 'WindSong', cursive; font-weight: normal;">„Štěstí lze nalézt i v těch nejtemnějších časech, pokud nezapomeneme rozsvítit světlo. My jsme to své našli jeden v druhém."</p>
+            <p style="text-align: center; margin-top: 2.5rem; font-size: 1.47rem; line-height: 1.85; color: #3d5a80; font-family: 'WindSong', cursive; font-weight: 550;">„Štěstí lze nalézt i v těch nejtemnějších časech, pokud nezapomeneme rozsvítit světlo. My jsme to své našli jeden v druhém."</p>
         </div>
     </section>
 
     <!-- Náš Mlýn -->
     <section id="nas-mlyn" class="page-section section-alt">
+        <img class="lily-right" src="{% static 'core/photos/lily_drawings/Lily_drawing_5.png' %}" alt="">
         <div class="section-inner">
             <h2 class="section-title">Místo činu</h2>
             <div class="split-grid reverse">
@@ -651,8 +682,8 @@
                     <img src="{% static 'core/photos/misto-cinu/nas_mlyn_5.jpg' %}" alt="Náš Mlýn" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;">
                 </div>
                 <div class="split-text">
-                    <p class="section-text"><strong>31. října 2026</strong>, ve 12:00</p>
-                    <p class="section-text">Náš Mlýn, Ochoz 18, 798 52 Ochoz</p>
+                    <p class="section-text"><strong>31. října 2026, ve 12:00</strong></p>
+                    <p class="section-text"><strong>Náš Mlýn, Ochoz 18, 798 52 Ochoz</strong></p>
                     <p class="section-text">Říká se, že ta nejkouzelnější místa nebývají vidět na první pohled. Náš Mlýn je přesně jedním z nich. Schovaný mezi stromy, v klidném údolí, kde mobilní signál trochu slábne, daleko od každodenního shonu, se na jeden den promění v náš malý svět.</p>
                     <p class="section-text">Právě tady proběhne úplně všechno – obřad, hostina, první tanec i večerní oslava. To nejdůležitější ale netvoří rybník, les ani starý mlýn. Tvoří ho lidé, se kterými tenhle den můžeme sdílet. Budeme moc rádi, když mezi nimi budete i Vy.</p>
                 </div>
@@ -668,29 +699,34 @@
     </div>
 
     <!-- Harmonogram -->
-    <section id="harmonogram" class="page-section">
+    <section id="harmonogram" class="page-section" style="background: rgba(212, 197, 176, 0.35);">
         <div class="section-inner">
-            <h2 class="section-title">Harmonogram</h2>
+            <div style="text-align: center; margin-bottom: 2.5rem;">
+                <div style="position: relative; display: inline-block;">
+                    <img src="{% static 'core/photos/lily_drawings/Lily_drawing_8.png' %}" alt="" style="position: absolute; right: calc(100% + 1rem); top: 50%; transform: translateY(-50%); height: 120px; opacity: 0.55; pointer-events: none;">
+                    <h2 class="section-title" style="margin-bottom: 0;">Harmonogram</h2>
+                </div>
+            </div>
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="tl-spine"><div class="tl-dot"></div></div>
                     <div class="tl-card">
-                        <i class="fa-solid fa-champagne-glasses tl-icon"></i>
-                        <div><div class="tl-time">11:00</div><div class="tl-label">Příjezd a uvítání hostů</div></div>
+                        <i class="fa-solid fa-plane-arrival tl-icon"></i>
+                        <div><div class="tl-time">11:00</div><div class="tl-label">Příjezd hostů</div></div>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="tl-spine"><div class="tl-dot"></div></div>
                     <div class="tl-card">
-                        <i class="fa-solid fa-infinity tl-icon"></i>
-                        <div><div class="tl-time">12:00</div><div class="tl-label">Svatební obřad</div></div>
+                        <i class="fa-solid fa-heart tl-icon"></i>
+                        <div><div class="tl-time">12:00</div><div class="tl-label">Řekneme si ANO</div></div>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="tl-spine"><div class="tl-dot"></div></div>
                     <div class="tl-card">
                         <i class="fa-solid fa-camera tl-icon"></i>
-                        <div><div class="tl-time">13:00</div><div class="tl-label">Gratulace &amp; společné foto</div></div>
+                        <div><div class="tl-time">12:40</div><div class="tl-label">Společné focení</div></div>
                     </div>
                 </div>
                 <div class="timeline-item">
@@ -703,19 +739,34 @@
                 <div class="timeline-item">
                     <div class="tl-spine"><div class="tl-dot"></div></div>
                     <div class="tl-card">
-                        <i class="fa-solid fa-cake-candles tl-icon"></i>
-                        <div><div class="tl-time">17:00</div><div class="tl-label">Dort &amp; přípitky</div></div>
+                        <i class="fa-solid fa-cookie-bite tl-icon"></i>
+                        <div><div class="tl-time">16:00</div><div class="tl-label">Krájení dortu</div></div>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="tl-spine"><div class="tl-dot"></div></div>
                     <div class="tl-card">
-                        <i class="fa-solid fa-music tl-icon"></i>
-                        <div><div class="tl-time">18:00</div><div class="tl-label">Zábava &amp; tanec</div></div>
+                        <i class="fa-solid fa-people-robbery tl-icon"></i>
+                        <div><div class="tl-time">17:00</div><div class="tl-label">První tanec</div></div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-spine"><div class="tl-dot"></div></div>
+                    <div class="tl-card">
+                        <i class="fa-solid fa-wand-sparkles tl-icon"></i>
+                        <div><div class="tl-time">20:00</div><div class="tl-label">Nechte lásku zajiskřit</div></div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-spine"><div class="tl-dot"></div></div>
+                    <div class="tl-card">
+                        <i class="fa-solid fa-martini-glass-citrus tl-icon"></i>
+                        <div><div class="tl-time">21:00</div><div class="tl-label">Párty</div></div>
                     </div>
                 </div>
             </div>
         </div>
+        <img class="lily-right" src="{% static 'core/photos/lily_drawings/Lily_drawing_6.png' %}" alt="" style="top: auto; bottom: 3rem; left: calc(50% + 280px); right: auto;">
     </section>
 
     <!-- Dress code -->
@@ -750,7 +801,7 @@
     </section>
 
     <!-- Ubytování -->
-    <section id="ubytovani" class="page-section">
+    <section id="ubytovani" class="page-section" style="background: rgba(212, 197, 176, 0.35);">
         <div class="section-inner">
             <h2 class="section-title">Ubytování</h2>
             <p class="section-text" style="text-align: center;">V okolí Ochoze se nachází několik příjemných možností ubytování. Níže uvádíme výběr z těch nejbližších míst.</p>
@@ -825,6 +876,7 @@
 
     <!-- Praktické info -->
     <section id="prakticke-info" class="page-section section-alt">
+        <img class="lily-right" src="{% static 'core/photos/lily_drawings/Lily_drawing_5.png' %}" alt="" style="left: calc(50% + 550px - 2rem); right: auto;">
         <div class="section-inner">
             <h2 class="section-title">Praktické info</h2>
             <div class="prakticke-grid">
@@ -848,7 +900,12 @@
 
     <!-- Bottom CTA -->
     <div class="cta-section">
-        <p style="font-family: 'WindSong', cursive; font-size: 3rem; color: #1a2e4f; margin-bottom: 1.5rem;">Těšíme se na vás!</p>
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div style="position: relative; display: inline-block;">
+                <img src="{% static 'core/photos/lily_drawings/Lily_drawing_7.png' %}" alt="" style="position: absolute; right: calc(100% + 1rem); top: 50%; transform: translateY(-50%) translateX(-50%); height: 160px; opacity: 0.55; pointer-events: none;">
+                <span style="font-family: 'WindSong', cursive; font-size: 3rem; color: #1a2e4f; white-space: nowrap; display: block;">Těšíme se na vás!</span>
+            </div>
+        </div>
         <a href="{% url 'rsvp' %}" class="rsvp-btn">Přijdeme!</a>
     </div>
 
