@@ -123,6 +123,7 @@
             justify-content: center;
             gap: 2.5rem;
             padding: 0.85rem 2rem;
+            overflow-x: auto;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.6s ease;
@@ -602,7 +603,6 @@
 </div>
 
 <nav id="top-nav">
-    <img src="{% static 'core/photos/lily_drawings/Lily_drawing_9.png' %}" alt="" style="height: 36px; opacity: 0.65; pointer-events: none;">
     <a href="#o-nas" class="nav-link">O nás</a>
     <a href="#nas-mlyn" class="nav-link">Místo činu</a>
     <a href="#harmonogram" class="nav-link">Harmonogram</a>
@@ -875,7 +875,7 @@
     </section>
 
     <!-- Praktické info -->
-    <section id="prakticke-info" class="page-section section-alt">
+    <section id="prakticke-info" class="page-section section-alt" style="overflow: hidden;">
         <img class="lily-right" src="{% static 'core/photos/lily_drawings/Lily_drawing_5.png' %}" alt="" style="left: calc(50% + 550px - 2rem); right: auto;">
         <div class="section-inner">
             <h2 class="section-title">Praktické info</h2>
@@ -903,7 +903,7 @@
         <div style="text-align: center; margin-bottom: 1.5rem;">
             <div style="position: relative; display: inline-block;">
                 <img src="{% static 'core/photos/lily_drawings/Lily_drawing_7.png' %}" alt="" style="position: absolute; right: calc(100% + 1rem); top: 50%; transform: translateY(-50%) translateX(-50%); height: 160px; opacity: 0.55; pointer-events: none;">
-                <span style="font-family: 'WindSong', cursive; font-size: 3rem; color: #1a2e4f; white-space: nowrap; display: block;">Těšíme se na vás!</span>
+                <span style="font-family: 'WindSong', cursive; font-size: clamp(1.8rem, 7vw, 3rem); color: #1a2e4f; display: block;">Těšíme se na vás!</span>
             </div>
         </div>
         <a href="{% url 'rsvp' %}" class="rsvp-btn">Přijdeme!</a>
