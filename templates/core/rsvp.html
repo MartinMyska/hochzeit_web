@@ -511,6 +511,25 @@
 <script>
     let personCount = 0;
 
+    // Prevent accidental form submission when pressing Enter in text fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('rsvp-form');
+        if (form) {
+            form.addEventListener('keydown', function(e) {
+                // If Enter key is pressed
+                if (e.key === 'Enter') {
+                    // Get the element that triggered the event
+                    const target = e.target;
+                    // If it's an input field (not textarea, not submit button), prevent submission
+                    if (target.tagName === 'INPUT' && target.type !== 'submit' && target.type !== 'button') {
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+            });
+        }
+    });
+
     function collectData() {
         const persons = [];
         document.querySelectorAll('#people-list .person-card').forEach(card => {
