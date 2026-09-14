@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=WindSong:wght@400;500&family=Clicker+Script&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -919,7 +919,7 @@
     const gate = document.getElementById('gate');
     const hint = document.getElementById('gate-hint');
     let phase = 'idle';
-    let leafletReady = false;
+    let maplibreReady = false;
     let gateOpened = false;
     let mapInitialized = false;
 
@@ -927,18 +927,20 @@
         if (mapInitialized) return;
         mapInitialized = true;
         const LAT = 49.598830, LNG = 16.929680;
-        const map = L.map('map').setView([LAT, LNG], 15);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-        L.marker([LAT, LNG]).addTo(map);
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://tiles.openfreemap.org/styles/positron',
+            center: [LNG, LAT],
+            zoom: 15
+        });
+        new maplibregl.Marker().setLngLat([LNG, LAT]).addTo(map);
     }
 
-    function onLeafletReady() { leafletReady = true; if (gateOpened) initMap(); }
+    function onMaplibreReady() { maplibreReady = true; if (gateOpened) initMap(); }
     function onGateOpened() {
         gateOpened = true;
         document.getElementById('top-nav').classList.add('visible');
-        if (leafletReady) initMap();
+        if (maplibreReady) initMap();
     }
 
     function openGate() {
@@ -1032,11 +1034,11 @@
         document.querySelectorAll('.carousel').forEach(initCarousel);
     }());
 
-    // ── Map (load Leaflet eagerly, init only after gate opens) ──
-    const leafletScript = document.createElement('script');
-    leafletScript.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-    leafletScript.onload = onLeafletReady;
-    document.head.appendChild(leafletScript);
+    // ── Map (load MapLibre eagerly, init only after gate opens) ──
+    const maplibreScript = document.createElement('script');
+    maplibreScript.src = 'https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js';
+    maplibreScript.onload = onMaplibreReady;
+    document.head.appendChild(maplibreScript);
 </script>
 </body>
 </html>
